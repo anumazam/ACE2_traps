@@ -1,0 +1,164 @@
+<ROSETTASCRIPTS>
+    
+    <SCOREFXNS>
+        <ScoreFunction
+            name = "beta"
+            weights = "beta_nov16"
+        />
+    </SCOREFXNS>
+    
+    <RESIDUE_SELECTORS>
+        <Index
+            name = "ACE2_1"
+            resnums = "24A-45A"
+        />
+        <Index
+            name = "ACE2_2"
+            resnums = "79A-83A"
+        />
+        <Index
+            name = "ACE2_3"
+            resnums = "325A-330A"
+        />
+        <Index
+            name = "ACE2_4"
+            resnums = "353A-357A"
+        />
+        <Index
+            name = "RBD_1"
+            resnums = "417B"
+        />
+        <Index
+            name = "RBD_2"
+            resnums = "446B-456B"
+        />
+        <Index
+            name = "RBD_3"
+            resnums = "473B-505B"
+        />
+        <Or
+            name = "ACE2_residues"
+            selectors = "ACE2_1, ACE2_2, ACE2_3, ACE2_4"
+        />
+        <Or
+            name = "RBD_residues"
+            selectors = "RBD_1, RBD_2, RBD_3"
+        />
+        <Or
+            name = "ACE2_RBD_residues"
+            selectors = "ACE2_residues, RBD_residues"
+        />
+    </RESIDUE_SELECTORS>
+    
+    <SIMPLE_METRICS>
+        <TotalEnergyMetric
+            name = "total_energy_ACE2"
+            residue_selector = "ACE2_residues"
+            custom_type = "ACE2"
+        />
+        <TotalEnergyMetric
+            name = "total_energy_RBD"
+            residue_selector = "RBD_residues"
+            custom_type = "RBD"
+        />
+        <SasaMetric
+            name = "sasa_ACE2"
+            residue_selector = "ACE2_residues"
+            custom_type = "ACE2"
+        />
+        <SasaMetric
+            name = "sasa_RBD"
+            residue_selector = "RBD_residues"
+            custom_type = "RBD"
+        />
+        <InteractionEnergyMetric
+            name = "interaction_energy"
+            residue_selector = "ACE2_residues"
+            residue_selector2 = "RBD_residues"
+            scorefxn = "beta"
+        />
+        <SapScoreMetric
+            name = "sap_ACE2"
+            score_selector = "ACE2_residues"
+        />
+        <HbondMetric
+            name = "Hbond"
+            residue_selector = "ACE2_residues"
+            residue_selector2 = "RBD_residues"
+            output_as_pdb_nums = "True"
+            include_self = "True"
+        />
+        <PerResidueClashMetric
+            name = "pr_clash"
+            output_as_pdb_nums = "True"
+            residue_selector = "ACE2_RBD_residues"
+            use_hydrogens = "False"
+            soft_clash = "True"
+        />
+        <PerResidueEnergyMetric
+            name = "pr_total_energy"
+            output_as_pdb_nums = "True"
+            residue_selector = "ACE2_RBD_residues"
+            scoretype = "total_score"
+            scorefxn = "beta"
+            custom_type = "pr_total_energy"
+        />
+        <PerResidueEnergyMetric
+            name = "pr_fa_elec"
+            output_as_pdb_nums = "True"
+            residue_selector = "ACE2_RBD_residues"
+            scoretype = "fa_elec"
+            scorefxn = "beta"
+            custom_type = "pr_fa_elec"
+        />
+        <PerResidueEnergyMetric
+            name = "pr_hbond_bb_sc"
+            output_as_pdb_nums = "True"
+            residue_selector = "ACE2_RBD_residues"
+            scoretype = "hbond_bb_sc"
+            scorefxn = "beta"
+            custom_type = "pr_hbond_bb_sc"
+        />
+        <PerResidueEnergyMetric
+            name = "pr_hbond_sc"
+            output_as_pdb_nums = "True"
+            residue_selector = "ACE2_RBD_residues"
+            scoretype = "hbond_sc"
+            scorefxn = "beta"
+            custom_type = "pr_hbond_sc"
+        />
+        <PerResidueSasaMetric
+            name = "pr_sasa"
+            output_as_pdb_nums = "True"
+            residue_selector = "ACE2_RBD_residues"
+            custom_type = "pr_sasa"
+        />
+        <PerResidueSapScoreMetric
+            name = "pr_SAP"
+            output_as_pdb_nums = "True"
+            residue_selector = "ACE2_RBD_residues"
+            score_selector = "ACE2_RBD_residues"
+            custom_type = "pr_SAP"
+        />
+        <ElectrostaticComplementarityMetric
+            name = "electrostatic_comp"
+            ignore_radius = "10"
+            residue_selector1 = "ACE2_residues"
+            residue_selector2 = "RBD_residues"
+            report_all_ec = "True"
+            custom_type = "pr_ec"
+        />
+    </SIMPLE_METRICS>
+    
+    <MOVERS>
+        <RunSimpleMetrics
+            name = "run_metrics"
+            metrics = "total_energy_ACE2,total_energy_RBD,sasa_ACE2,sasa_RBD,interaction_energy,sap_ACE2,Hbond,pr_clash,pr_total_energy,pr_fa_elec,pr_hbond_bb_sc,pr_hbond_sc,pr_sasa,pr_SAP,electrostatic_comp"
+        />
+    </MOVERS>
+    
+    <PROTOCOLS>
+        <Add mover_name="run_metrics"/>
+    </PROTOCOLS>
+    
+</ROSETTASCRIPTS>
